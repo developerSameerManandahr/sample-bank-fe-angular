@@ -2,6 +2,9 @@
   <app-header></app-header>
   <app-nav></app-nav>
   <router-outlet></router-outlet>
+  <app-transaction *ngIf="isTransactionClicked"></app-transaction>
+  <app-transfer *ngIf="isTransferClicked"></app-transfer>
+  <app-main *ngIf="isHomeClicked"></app-main>
   <app-aside></app-aside>
   <app-footer></app-footer>
 </div>

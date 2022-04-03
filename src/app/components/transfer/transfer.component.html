@@ -1,1 +1,54 @@
-<p>transfer works!</p>
+<div class="transfer-container">
+  <div class="pay-to-someone" (click)="payToSomeoneClick()">pay to someone</div>
+  <div class="manage-fund" (click)="manageFundClick()">Manage funds</div>
+</div>
+
+<div *ngIf="!payToSomeone">
+
+  <form [formGroup]="moveMoneyForm" (submit)="transfer()">
+    <div>
+      <p>Transfer type</p>
+      <input type="radio" (click)="selectCurrentToSaving() " name="amount" value="Current to Saving"> Current to Saving
+      <input type="radio" (click)="selectSavingToCurrent()" name="amount" value="Saving to Current"> Saving to Current
+      <div>
+        <label>Amount</label>
+      </div>
+      <input formControlName="amount" type="number">
+      <span *ngIf="amountControl.errors?.['min']">Amount must be at least greater or equal to 5</span>
+      <div *ngIf="clicked">
+        <p>Now Input your pin</p>
+        <label>pin</label>
+        <input [formControl]="pinControl" type="password">
+      </div>
+      <div>
+        <button [disabled]="validate()">transfer money from current to savings</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div *ngIf="payToSomeone">
+  <form [formGroup]="sendMoneyForm" (submit)="sendMoney()">
+    <div>
+      <div>
+        <label for="bUser">Beneficiary username</label>
+        <input formControlName="username" id="bUser" type="text">
+        <span *ngIf="beneficiaryUsernameControl.touched && beneficiaryUsernameControl.errors?.['required']">Beneficiary username is required</span>
+
+      </div>
+      <div>
+        <label>Amount</label>
+      </div>
+      <input formControlName="amount" type="number">
+      <span *ngIf="sendMoneyAmountControl.errors?.['min']">Amount must be at least greater or equal to 5</span>
+      <div *ngIf="sendMoneyClicked">
+        <p>Now Input your pin</p>
+        <label>pin</label>
+        <input [formControl]="sendMoneyPinControl" type="password">
+      </div>
+      <div>
+        <button [disabled]="validateSendMoney()">transfer money from current to savings</button>
+      </div>
+    </div>
+  </form>
+</div>

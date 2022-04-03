@@ -1,0 +1,16 @@
+.transfer-container {
+  display: grid;
+  grid-gap: 3px;
+  grid-template: repeat(1, 50px)/ repeat(2 , 1fr);
+}
+
+.pay-to-someone{
+  background: #2BB961;
+  text-align: center;
+}
+
+.manage-fund{
+  background: crimson;
+  text-align: center;
+
+}

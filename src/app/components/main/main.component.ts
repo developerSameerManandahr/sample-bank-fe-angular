@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {getCurrentMainModel} from "../../helpers/helpers";
 
 @Component({
   selector: 'app-main',
@@ -7,7 +8,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MainComponent implements OnInit {
 
-  constructor() { }
+  public name = '';
+
+  constructor() {
+    const currentMainModel = getCurrentMainModel();
+    if (currentMainModel.userDetails) {
+      this.name = currentMainModel.userDetails.firstName + ' ' +
+        currentMainModel.userDetails.middleName +
+        '' + currentMainModel.userDetails.lastName;
+    }
+  }
 
   ngOnInit(): void {
   }

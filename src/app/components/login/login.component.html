@@ -1,0 +1,27 @@
+<div>
+  <h1>Login here</h1>
+
+  <form class="login">
+    <p>Transfer type</p>
+    <input type="radio" (click)="loginByPassword()" name="amount" value="Login By Password"> Login By Password
+    <input type="radio" (click)="loginByPIN()" name="amount" value="Login By PIN"> Login By PIN
+    <div *ngIf="!loginByPin"><label for="username">Username</label>
+      <input type="text" [(ngModel)]="username" name="username" id="username" ></div>
+    <div *ngIf="!loginByPin"><label for="password">Password</label>
+      <input type="password" [(ngModel)]="password" name="password" id="password"></div>
+
+    <div *ngIf="loginByPin"><label for="accountNumber">Account Number</label>
+      <input type="text" [(ngModel)]="accountNumber" name="accountNumber" id="accountNumber"></div>
+    <div *ngIf="loginByPin"><label for="pin">PIN</label>
+      <input type="text" [(ngModel)]="pin" name="pin" id="pin"></div>
+
+    <div class="actions">
+      <input (click)="login()" type="submit" name="login" value="Login">
+    </div>
+  </form>
+
+  <div class="account">
+    <p>Create a new account <a href="/signup">here</a>.</p>
+  </div>
+
+</div>

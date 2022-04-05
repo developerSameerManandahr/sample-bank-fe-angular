@@ -16,7 +16,11 @@ export class AppComponent implements OnInit {
     if (localStorage.getItem('currency')) {
 
     }
-    let currentUser = localStorage.getItem('CurrentUser');
+    this.router.events
+      .subscribe(value => {
+        console.log();
+      })
+    let currentUser = localStorage.getItem('currentUser');
     if (currentUser) {
       this.router.navigate(['/dashboard']);
     } else if (!currentUser) {
@@ -52,12 +56,6 @@ export class AppComponent implements OnInit {
       localStorage.setItem('admin', JSON.stringify(model));
 
       localStorage.setItem('currency', 'GBP');
-    }
-    let currentUser = localStorage.getItem('CurrentUser');
-    if (currentUser) {
-      this.router.navigate(['/dashboard']);
-    } else if (!currentUser) {
-      this.router.navigate(['/login']);
     }
   }
 }

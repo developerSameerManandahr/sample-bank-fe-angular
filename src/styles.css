@@ -7,7 +7,7 @@ body {
 }
 .container {
   display: grid;
-  grid-template-columns: 200px 1fr 200px;
+  grid-template-columns: 3fr 12fr 4fr;
   grid-template-rows: auto 1fr auto;
   grid-gap: 12px;
   grid-template-areas:
@@ -35,14 +35,14 @@ app-transaction,
 app-transfer,
 app-main {
   grid-area: content;
-  background-color: #F4CE46;
+  background-color: #f7f7f9;
   padding: 25px;
 }
 
 app-aside {
   grid-area: side;
   margin-right: 0.6rem;
-  background-color: #2A92BF;
+  background-color: #eaf3fa;
 }
 
 app-footer {

@@ -1,1 +1,82 @@
-<p>signup works!</p>
+<div class="container">
+  <div class="form">
+    <form [formGroup]="signUpForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="Username">Username</label>
+        <input type="text" class="form-control" id="Username" aria-describedby="userHelp" placeholder="Enter email"
+               formControlName="username">
+        <small
+          *ngIf="validateUsername()"
+          id="userHelp"
+          class="form-text text-danger"
+        >Username is required.</small>
+      </div>
+      <div class="form-group">
+        <label for="inputPassword1">Password</label>
+        <input type="password"
+               class="form-control"
+               formControlName="password"
+               id="inputPassword1"
+               placeholder="Password"
+               aria-describedby="passwordHelp"
+        >
+        <small id="passwordHelp" class="form-text text-danger" *ngIf="passwordControl.touched && passwordControl.errors?.['required']">Password Required<br></small>
+        <small class="form-text text-danger" *ngIf="passwordControl.errors?.['minlength']">Password should have at least 8 characters<br></small>
+        <small class="form-text text-danger" *ngIf="!validateEqualPassword()">Password doesn't match with the Re-Enter password<br></small>
+      </div>
+
+      <div class="form-group">
+        <label for="inputPassword2">Re-enter Password</label>
+        <input type="password" class="form-control" id="inputPassword2" formControlName="rePassword"
+               placeholder="Password">
+        <small class="form-text text-danger" *ngIf="reEnterPasswordControl.touched && reEnterPasswordControl.errors?.['required']">Password Required<br></small>
+        <small class="form-text text-danger" *ngIf="reEnterPasswordControl.errors?.['minlength']">Password should have at least 8 characters<br></small>
+        <small class="form-text text-danger" *ngIf="!validateEqualPassword()">Password doesn't match with the Re-Enter password<br></small>
+      </div>
+
+      <div class="form-group">
+        <label for="pin1">PIN</label>
+        <input type="password" class="form-control" id="pin1" placeholder="PIN" formControlName="pin">
+        <small class="form-text text-danger" *ngIf="pinControl.touched && pinControl.errors?.['required']">PIN Required<br></small>
+        <small class="form-text text-danger" *ngIf="pinControl.errors?.['minlength']">PIN should have 6 characters <br></small>
+        <small class="form-text text-danger" *ngIf="pinControl.errors?.['pattern']">PIN should only contain number character<br></small>
+        <small class="form-text text-danger" *ngIf="!validateEqualPin()">PIN doesn't match with the Re-Enter password<br></small>
+      </div>
+
+      <div>
+        <label for="pin2">Re-enter PIN</label>
+        <input type="password" class="form-control" id="pin2" placeholder="PIN" formControlName="rePin">
+        <small class="form-text text-danger" *ngIf="reEnterPinControl.touched && reEnterPinControl.errors?.['required']">PIN Required<br></small>
+        <small class="form-text text-danger" *ngIf="reEnterPinControl.errors?.['minlength']">PIN should have 6 characters<br></small>
+        <small class="form-text text-danger" *ngIf="reEnterPinControl.errors?.['pattern']">PIN should only contain number character<br></small>
+        <small class="form-text text-danger" *ngIf="!validateEqualPin()">PIN doesn't match with the Re-Enter password<br></small>
+
+      </div>
+      <div class="form-group">
+        <label for="FirstName">First Name</label>
+        <input type="text" class="form-control" id="FirstName" placeholder="Enter First Name"
+               formControlName="firstName">
+        <small class="form-text text-danger" *ngIf="firstNameControl.touched && firstNameControl.errors?.['required']">First Name is Required</small>
+
+      </div>
+
+      <div class="form-group">
+        <label for="MiddleName">Middle Name</label>
+        <input type="text" class="form-control" id="MiddleName" placeholder="Enter Middle Name"
+               formControlName="middleName">
+      </div>
+
+
+      <div class="form-group">
+        <label for="LastName">Last Name</label>
+        <input type="text" class="form-control" id="LastName" placeholder="Enter Last Name" formControlName="lastName">
+        <small class="form-text text-danger" *ngIf="lastNameControl.touched && lastNameControl.errors?.['required']">Last Name is Required</small>
+      </div>
+      <button type="submit" [className]="!signUpForm.valid ? 'btn-danger': 'btn-primary'" class="btn"
+              [disabled]="!signUpForm.valid">Submit
+      </button>
+    </form>
+
+  </div>
+</div>
+

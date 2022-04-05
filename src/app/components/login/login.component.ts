@@ -34,9 +34,34 @@ export class LoginComponent implements OnInit {
 
   async login() {
     if (this.loginByPin) {
+      await this.authenticateWithPin();
+    } else {
+      await this.authenticateWithPassword();
+    }
+
+  }
+
+  private async authenticateWithPassword() {
+    let mainString = localStorage.getItem(this.username);
+    if (mainString) {
+      const main: MainModel = JSON.parse(mainString);
+      let userDetails = main.userDetails;
+      if (userDetails && userDetails.password === this.password) {
+        localStorage.setItem('currentUser', this.username);
+        await this.router.navigate(['/dashboard']);
+      } else {
+        alert('Invalid credentials');
+      }
+    } else {
+      alert('Invalid credentials');
+    }
+  }
+
+  private async authenticateWithPin() {
+    {
       for (let item in localStorage) {
         const item1 = localStorage.getItem(item) ? localStorage.getItem(item) : '';
-        if (item1 && item != 'currentUser') {
+        if (item1 && item != 'currentUser' && item != 'currency') {
           let parse = JSON.parse(item1);
 
           const userDetails1: SignUpCredentials = parse.userDetails;
@@ -53,21 +78,10 @@ export class LoginComponent implements OnInit {
       if (!this.loggedId) {
         alert('Invalid credentials');
       }
-    } else {
-      let mainString = localStorage.getItem(this.username);
-      if (mainString) {
-        const main: MainModel = JSON.parse(mainString);
-        let userDetails = main.userDetails;
-        if (userDetails && userDetails.password === this.password) {
-          localStorage.setItem('currentUser', this.username);
-          await this.router.navigate(['/dashboard']);
-        } else {
-          alert('Invalid credentials');
-        }
-      } else {
-        alert('Invalid credentials');
-      }
     }
+  }
 
+  async signup() {
+    await this.router.navigate(['/signup']);
   }
 }

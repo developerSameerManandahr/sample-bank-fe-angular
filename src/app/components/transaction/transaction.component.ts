@@ -21,20 +21,20 @@ export class TransactionComponent implements OnInit {
       if (username) {
         this.parsedTransactions = this.transactions
           .filter((transaction: Transaction) => {
-            return transaction.from === username || transaction.to
+            return transaction.from === username || transaction.to === username
           })
           .map((transaction: Transaction) => {
             if (transaction.from === username) {
               const parsedTransaction: ParsedTransaction = {
-                date: new Date(transaction.date),
+                date: new Date(transaction.date).toDateString(),
                 transactionType: 'DR',
-                amount: '-' + transaction.amount,
+                amount: transaction.amount,
                 beneficiaryUser: transaction.to
               }
               return parsedTransaction;
             } else {
               const parsedTransaction: ParsedTransaction = {
-                date: new Date(transaction.date),
+                date: new Date(transaction.date).toDateString(),
                 transactionType: 'CR',
                 amount: transaction.amount,
                 beneficiaryUser: transaction.from

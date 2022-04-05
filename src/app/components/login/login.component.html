@@ -13,7 +13,7 @@
     <div *ngIf="loginByPin"><label for="accountNumber">Account Number</label>
       <input type="text" [(ngModel)]="accountNumber" name="accountNumber" id="accountNumber"></div>
     <div *ngIf="loginByPin"><label for="pin">PIN</label>
-      <input type="text" [(ngModel)]="pin" name="pin" id="pin"></div>
+      <input type="password" [(ngModel)]="pin" name="pin" id="pin"></div>
 
     <div class="actions">
       <input (click)="login()" type="submit" name="login" value="Login">
@@ -21,7 +21,7 @@
   </form>
 
   <div class="account">
-    <p>Create a new account <a href="/signup">here</a>.</p>
+    <p>Create a new account <a class="text-primary" (click)="signup()">here</a>.</p>
   </div>
 
 </div>

@@ -11,6 +11,7 @@ import {Transaction} from "../../model/transaction";
 })
 export class TransferComponent implements OnInit {
 
+  public currencyType = '£';
   public payToSomeone = true;
   public amountControl;
   public pinControl;
@@ -24,7 +25,23 @@ export class TransferComponent implements OnInit {
   public sendMoneyForm;
   public sendMoneyClicked = false;
 
+
   constructor() {
+    const currency = localStorage.getItem('currency');
+    if (currency) {
+      switch (currency) {
+        default:
+        case 'GBP':
+          this.currencyType = '£';
+          break;
+        case 'USD':
+          this.currencyType = '$';
+          break;
+        case 'EUR':
+          this.currencyType = '€';
+          break;
+      }
+    }
     this.amountControl = new FormControl('',
       [
         Validators.required,

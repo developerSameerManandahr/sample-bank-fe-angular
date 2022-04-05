@@ -1,6 +1,13 @@
-<div class="transfer-container">
-  <div class="pay-to-someone" (click)="payToSomeoneClick()">pay to someone</div>
-  <div class="manage-fund" (click)="manageFundClick()">Manage funds</div>
+<div>
+  <ul class="nav">
+    <li class="nav-item">
+      <a class="nav-link active btn-dark" (click)="payToSomeoneClick()" aria-current="page">Pay to
+        someone</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link active btn-info" (click)="manageFundClick()">Manage funds</a>
+    </li>
+  </ul>
 </div>
 
 <div *ngIf="!payToSomeone">
@@ -8,20 +15,42 @@
   <form [formGroup]="moveMoneyForm" (submit)="transfer()">
     <div>
       <p>Transfer type</p>
-      <input type="radio" (click)="selectCurrentToSaving() " name="amount" value="Current to Saving"> Current to Saving
-      <input type="radio" (click)="selectSavingToCurrent()" name="amount" value="Saving to Current"> Saving to Current
-      <div>
-        <label>Amount</label>
+      <div class="form-check">
+        <input
+          class="form-check-input"
+          type="radio"
+          name="flexRadioDefault" id="flexRadioDefault1"
+          (click)="selectSavingToCurrent() ">
+        <label class="form-check-label" for="flexRadioDefault1">
+          Saving to Current
+        </label>
       </div>
-      <input formControlName="amount" type="number">
-      <span *ngIf="amountControl.errors?.['min']">Amount must be at least greater or equal to 5</span>
-      <div *ngIf="clicked">
-        <p>Now Input your pin</p>
-        <label>pin</label>
-        <input [formControl]="pinControl" type="password">
+      <div class="form-check">
+        <input
+          class="form-check-input"
+          type="radio"
+          name="flexRadioDefault"
+          (click)="selectCurrentToSaving() "
+          id="flexRadioDefault2" checked>
+        <label class="form-check-label" for="flexRadioDefault2">
+          Current to Saving
+        </label>
       </div>
+
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text">{{currencyType}}</span>
+        </div>
+        <input placeholder="Amount" class="form-control" formControlName="amount" type="number">
+      </div>
+      <small class="form-text text-danger" *ngIf="amountControl.errors?.['min']">Amount must be at least greater or equal {{currencyType}}to 5</small>
+
+      <div *ngIf="clicked" class="input-group mb-3">
+        <input placeholder="Please type your pin" class="form-control" [formControl]="pinControl" type="password">
+      </div>
+      <small class="text-danger" *ngIf="pinControl.touched && !pinControl.valid">The pin should be of 6 characters</small>
       <div>
-        <button [disabled]="validate()">transfer money from current to savings</button>
+        <button class="btn nav-link" [className]="validate() ? 'btn-danger' : 'btn-primary'" [disabled]="validate()">Transfer</button>
       </div>
     </div>
   </form>
@@ -29,26 +58,29 @@
 
 <div *ngIf="payToSomeone">
   <form [formGroup]="sendMoneyForm" (submit)="sendMoney()">
-    <div>
-      <div>
-        <label for="bUser">Beneficiary username</label>
-        <input formControlName="username" id="bUser" type="text">
-        <span *ngIf="beneficiaryUsernameControl.touched && beneficiaryUsernameControl.errors?.['required']">Beneficiary username is required</span>
 
+    <div class="input-group mb-3">
+      <div class="input-group-prepend">
+        <span class="input-group-text" id="basic-addon1">@</span>
       </div>
-      <div>
-        <label>Amount</label>
-      </div>
-      <input formControlName="amount" type="number">
-      <span *ngIf="sendMoneyAmountControl.errors?.['min']">Amount must be at least greater or equal to 5</span>
-      <div *ngIf="sendMoneyClicked">
-        <p>Now Input your pin</p>
-        <label>pin</label>
-        <input [formControl]="sendMoneyPinControl" type="password">
-      </div>
-      <div>
-        <button [disabled]="validateSendMoney()">transfer money from current to savings</button>
-      </div>
+      <input type="text" class="form-control" placeholder="Recipient's username" aria-label="Username" formControlName="username" aria-describedby="basic-addon1">
     </div>
+    <small id="recipient-user-alert" class="form-text text-danger" *ngIf="beneficiaryUsernameControl.touched && beneficiaryUsernameControl.errors?.['required']">Beneficiary username is required</small >
+    <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text">{{currencyType}}</span>
+        </div>
+        <input placeholder="Amount" class="form-control" formControlName="amount" type="number">
+      </div>
+      <small  class="form-text text-danger" *ngIf="sendMoneyAmountControl.errors?.['min']">Amount must be at least greater or equal to {{currencyType}} 5</small>
+    <div *ngIf="sendMoneyClicked" class="input-group mb-3">
+      <input placeholder="Please type your pin" class="form-control" [formControl]="sendMoneyPinControl" type="password">
+    </div>
+    <small class="text-danger" *ngIf="sendMoneyPinControl.touched && !sendMoneyPinControl.valid">The pin should be of 6 characters</small>
+      <div>
+        <button class="btn nav-link" [className]="validateSendMoney() ? 'btn-danger' : 'btn-primary'" [disabled]="validateSendMoney() ">
+          Transfer
+        </button>
+      </div>
   </form>
 </div>

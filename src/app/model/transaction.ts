@@ -8,7 +8,7 @@ export interface Transaction {
 export interface ParsedTransaction {
   transactionType: string;
   amount: string;
-  date: Date,
+  date: string,
   beneficiaryUser: string
 }
 

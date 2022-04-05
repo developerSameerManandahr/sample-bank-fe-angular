@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute, Route, Router} from "@angular/router";
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'app-dashboard',
@@ -16,14 +16,10 @@ export class DashboardComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
+    // Used to see while page is clicked
     this.route.params.subscribe(value => {
       switch (value['id']) {
-        default:
-        case '0':
-          this.isHomeClicked = true;
-          this.isTransactionClicked = false;
-          this.isTransferClicked = false;
-          break;
         case '1':
           this.isHomeClicked = false;
           this.isTransactionClicked = true;
@@ -33,6 +29,12 @@ export class DashboardComponent implements OnInit {
           this.isHomeClicked = false;
           this.isTransactionClicked = false;
           this.isTransferClicked = true;
+          break;
+        default:
+        case '0':
+          this.isHomeClicked = true;
+          this.isTransactionClicked = false;
+          this.isTransferClicked = false;
           break;
       }
     });

@@ -1,11 +1,18 @@
-<p>transaction works!</p>
-
-<div *ngFor="let transaction of parsedTransactions">
-  <li>
-    <span>{{transaction.transactionType}}             </span>
-    <span>{{transaction.amount}}  </span>
-    <span>{{transaction.date.toLocaleString()}} </span>
-    <span>{{transaction.beneficiaryUser}} </span>
-  </li>
-
-</div>
+<table class="table">
+  <thead>
+  <tr>
+    <th scope="col">date</th>
+    <th scope="col">User</th>
+    <th scope="col">Type</th>
+    <th scope="col">Amount</th>
+  </tr>
+  </thead>
+  <tbody *ngFor="let transaction of parsedTransactions">
+  <tr>
+    <th scope="row">{{transaction.date}}</th>
+    <td>{{transaction.beneficiaryUser}}</td>
+    <td>{{transaction.transactionType}}</td>
+    <td>£ {{transaction.amount}}</td>
+  </tr>
+  </tbody>
+</table>

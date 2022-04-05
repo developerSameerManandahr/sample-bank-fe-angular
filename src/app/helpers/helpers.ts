@@ -32,3 +32,22 @@ export function updateMainModel(mainModel: MainModel) {
     localStorage.setItem(mainModel.userDetails.username, JSON.stringify(mainModel));
   }
 }
+
+export function  getCurrency(currency: string) {
+  let currencyType = '£';
+  if (currency) {
+    switch (currency) {
+      default:
+      case 'GBP':
+        currencyType = '£';
+        break;
+      case 'USD':
+        currencyType = '$';
+        break;
+      case 'EUR':
+        currencyType = '€';
+        break;
+    }
+  }
+  return currencyType;
+}

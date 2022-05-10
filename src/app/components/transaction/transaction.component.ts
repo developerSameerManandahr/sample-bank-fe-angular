@@ -1,51 +1,26 @@
 import {Component, OnInit} from '@angular/core';
 import {ParsedTransaction, Transaction} from "../../model/transaction";
 import {getUser} from "../../helpers/helpers";
+import {TransactionService} from "../../servies/api/TransactionService";
+import {TransactionResponse} from "../../model/response/transactionResponse";
 
 @Component({
   selector: 'app-transaction',
   templateUrl: './transaction.component.html',
-  styleUrls: ['./transaction.component.css']
+  styleUrls: ['./transaction.component.css'],
+  providers: [TransactionService]
 })
 export class TransactionComponent implements OnInit {
 
   private transactions: Array<Transaction> = [];
-  public parsedTransactions: Array<ParsedTransaction> = [];
+  public parsedTransactions: Array<TransactionResponse> = [];
 
-  constructor() {
-    const transactionString = localStorage.getItem('transactions') ? localStorage.getItem('transactions') : '[]';
-    if (transactionString != null) {
-      this.transactions = JSON.parse(transactionString);
+  constructor(private transactionService: TransactionService) {
+    transactionService.viewTransactions()
+      .then((response) => {
+        this.parsedTransactions = response.results;
+      })
 
-      let username = getUser() ? getUser() : '';
-      if (username) {
-        this.parsedTransactions = this.transactions
-          .filter((transaction: Transaction) => {
-            return transaction.from === username || transaction.to === username
-          })
-          .map((transaction: Transaction) => {
-            if (transaction.from === username) {
-              const parsedTransaction: ParsedTransaction = {
-                date: new Date(transaction.date).toDateString(),
-                transactionType: 'DR',
-                amount: transaction.amount,
-                beneficiaryUser: transaction.to
-              }
-              return parsedTransaction;
-            } else {
-              const parsedTransaction: ParsedTransaction = {
-                date: new Date(transaction.date).toDateString(),
-                transactionType: 'CR',
-                amount: transaction.amount,
-                beneficiaryUser: transaction.from
-              }
-              return parsedTransaction;
-            }
-          });
-
-      }
-
-    }
   }
 
   ngOnInit(): void {

@@ -9,7 +9,7 @@
   </thead>
   <tbody *ngFor="let transaction of parsedTransactions">
   <tr>
-    <th scope="row">{{transaction.date}}</th>
+    <th scope="row">{{transaction.dateOfTransaction}}</th>
     <td>{{transaction.beneficiaryUser}}</td>
     <td>{{transaction.transactionType}}</td>
     <td>£ {{transaction.amount}}</td>

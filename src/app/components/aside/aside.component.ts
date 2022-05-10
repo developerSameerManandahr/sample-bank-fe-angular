@@ -1,14 +1,17 @@
 import {Component, OnInit} from '@angular/core';
-import {getCurrency, getCurrentMainModel, getUser} from "../../helpers/helpers";
+import {getCurrency, getUser} from "../../helpers/helpers";
 import {Router} from "@angular/router";
-import {ExchangeService} from "../../servies/exchangeService";
+import {ExchangeService} from "../../servies/api/exchangeService";
 import {Constant} from "../../helpers/constant";
+import {AccountService} from "../../servies/api/AccountService";
+import {BaseResponse} from "../../model/response/baseResponse";
+import {AccountDetails} from "../../model/response/accountDetails";
 
 @Component({
   selector: 'app-aside',
   templateUrl: './aside.component.html',
   styleUrls: ['./aside.component.css'],
-  providers: [ExchangeService]
+  providers: [ExchangeService, AccountService]
 
 })
 export class AsideComponent implements OnInit {
@@ -21,6 +24,7 @@ export class AsideComponent implements OnInit {
   constructor(
     private router: Router,
     private exchangeService: ExchangeService,
+    private accountService: AccountService,
   ) {
 
   }
@@ -34,22 +38,31 @@ export class AsideComponent implements OnInit {
       this.currencyType = getCurrency(currencyType);
     if (user1)
       this.user = user1;
-    const currentMainModel = getCurrentMainModel();
-    const currentMainBalance = currentMainModel.balance;
-    if (currentMainBalance) {
-      let currentBalance = currentMainBalance['CURRENT'];
-      let savingBalance = currentMainBalance['SAVING'];
-      if (currencyType != Constant.BASE_CURRENCY && currencyType) {
-        this.convertCurrencyAndFormat(currencyType, currentBalance, savingBalance);
 
-      } else {
-        this.currentBalance = currentBalance;
-        this.savingBalance = savingBalance;
-      }
-    }
-    const userDetails = currentMainModel.userDetails;
-    if (userDetails)
-      this.accountNumber = userDetails.accountNumber;
+    this.accountService
+      .getAccountDetails()
+      .then((baseResponse: BaseResponse<AccountDetails>) => {
+        const accountDetails: Array<AccountDetails> = baseResponse.results;
+        const currentAccount = accountDetails.find((accountDetail) => accountDetail.accountType == 'CURRENT');
+        const savingAccount = accountDetails.find((accountDetail) => accountDetail.accountType == 'SAVING');
+
+        if (!(currentAccount && savingAccount)) {
+          return;
+        }
+        if (currencyType != Constant.BASE_CURRENCY && currencyType) {
+          this.convertCurrencyAndFormat(currencyType, currentAccount.balance, savingAccount.balance);
+
+        } else {
+          this.currentBalance = currentAccount.balance;
+          this.savingBalance = savingAccount.balance;
+        }
+      })
+      .catch(reason => {
+        console.error(reason);
+      })
+    const number = localStorage.getItem("accountNumber");
+    if (number) this.accountNumber = number;
+
   }
 
   /**
@@ -79,8 +92,8 @@ export class AsideComponent implements OnInit {
       })
       .then(value => {
         this.exchangeService.convert(currencyType, savingBalance)
-          .then(value => {
-            this.savingBalance = value.toFixed(2);
+          .then(balance => {
+            this.savingBalance = balance.toFixed(2);
           });
       });
   }

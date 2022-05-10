@@ -1,12 +1,15 @@
 import {Component, OnInit} from '@angular/core';
-import {MainModel} from "../../model/mainModel";
 import {Router} from "@angular/router";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {SignupRequest} from "../../model/request/signupRequest";
+import {AuthService} from "../../servies/api/AuthService";
+import {setAuthValues} from "../../helpers/helpers";
 
 @Component({
   selector: 'app-signup',
   templateUrl: './signup.component.html',
-  styleUrls: ['./signup.component.css']
+  styleUrls: ['./signup.component.css'],
+  providers: [AuthService]
 })
 export class SignupComponent implements OnInit {
 
@@ -20,7 +23,10 @@ export class SignupComponent implements OnInit {
   public firstNameControl;
   public lastNameControl;
 
-  constructor(private router: Router) {
+  constructor(
+    private router: Router,
+    private service: AuthService,
+  ) {
     this.userControl = new FormControl('',
       [
         Validators.required
@@ -79,45 +85,26 @@ export class SignupComponent implements OnInit {
   }
 
   onSubmit(): Promise<any> {
-    const username = this.userControl.value;
-    if (localStorage.getItem(username)) {
-      alert('Username Already used');
-      throw new Error('Username Already used');
-    }
-
-    const model: MainModel = {
-      userDetails: {
-        pin: this.pinControl.value,
-        password: this.passwordControl.value,
-        firstName: this.firstNameControl.value,
-        lastName: this.lastNameControl.value,
-        middleName: '',
-        username: username,
-        accountNumber: this.generateAccountNumber(10)
-      },
-      balance: {
-        CURRENT: 0,
-        SAVING: 0
-      },
-      currency: 'GBP',
+    const signupRequest: SignupRequest = {
+      pin: this.pinControl.value,
+      password: this.passwordControl.value,
+      firstName: this.firstNameControl.value,
+      lastName: this.lastNameControl.value,
+      middleName: '',
+      username: this.userControl.value,
+      address: 'preston',
+      phoneNumber: '07585564123'
     };
-    localStorage.setItem(username, JSON.stringify(model));
-    localStorage.setItem('currentUser', username);
-    return this.router.navigate(['/dashboard']);
-  }
 
-  generateAccountNumber(n: number): string {
-    var add = 1, max = 12 - add;   // 12 is the min safe number Math.random() can generate without it starting to pad the end with zeros.
-
-    if (n > max) {
-      return this.generateAccountNumber(max) + this.generateAccountNumber(n - max);
-    }
-
-    max = Math.pow(10, n + add);
-    var min = max / 10; // Math.pow(10, n) basically
-    var number = Math.floor(Math.random() * (max - min + 1)) + min;
-
-    return ("" + number).substring(add);
+    return this.service.signUp(signupRequest)
+      .then((authResponse) => {
+        setAuthValues(authResponse);
+      })
+      .then(() => this.router.navigate(['/dashboard']))
+      .catch(reason => {
+        console.debug(reason);
+        alert('Cannot create a user with given credentials')
+      })
   }
 
   validateUsername() {

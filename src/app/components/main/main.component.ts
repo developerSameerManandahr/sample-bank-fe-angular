@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {getCurrentMainModel} from "../../helpers/helpers";
+import {getStringItem} from "../../helpers/helpers";
 
 @Component({
   selector: 'app-main',
@@ -11,12 +11,8 @@ export class MainComponent implements OnInit {
   public name = '';
 
   constructor() {
-    const currentMainModel = getCurrentMainModel();
-    if (currentMainModel.userDetails) {
-      this.name = currentMainModel.userDetails.firstName + ' ' +
-        currentMainModel.userDetails.middleName +
-        '' + currentMainModel.userDetails.lastName;
-    }
+    let middleName = getStringItem('middleName').length == 0 ? '' : getStringItem('middleName') + ' ';
+    this.name = getStringItem('firstName') + ' ' + middleName + getStringItem('lastName');
   }
 
   ngOnInit(): void {

@@ -61,11 +61,20 @@
 
     <div class="input-group mb-3">
       <div class="input-group-prepend">
-        <span class="input-group-text" id="basic-addon1">@</span>
+        <span class="input-group-text" id="basic-addon1">#</span>
       </div>
-      <input type="text" class="form-control" placeholder="Recipient's username" aria-label="Username" formControlName="username" aria-describedby="basic-addon1">
+      <input type="text" class="form-control" placeholder="Account Number" aria-label="Username" formControlName="accountNumber" aria-describedby="basic-addon1">
     </div>
-    <small id="recipient-user-alert" class="form-text text-danger" *ngIf="beneficiaryUsernameControl.touched && beneficiaryUsernameControl.errors?.['required']">Beneficiary username is required</small >
+    <small id="recipient-user-alert" class="form-text text-danger" *ngIf="accountNumberControl.touched && accountNumberControl.errors?.['required']">Account Number is required</small >
+
+    <div class="input-group mb-3">
+      <div class="input-group-prepend">
+        <span class="input-group-text" id="basic-addon2">@</span>
+      </div>
+      <input type="text" class="form-control" placeholder="Full Name" aria-label="Username" formControlName="fullName" aria-describedby="basic-addon1">
+    </div>
+    <small id="recipient-name-alert" class="form-text text-danger" *ngIf="fullNameControl.touched && fullNameControl.errors?.['required']">Full Name is required</small >
+
     <div class="input-group mb-3">
         <div class="input-group-prepend">
           <span class="input-group-text">{{currencyType}}</span>
@@ -74,7 +83,7 @@
       </div>
       <small  class="form-text text-danger" *ngIf="sendMoneyAmountControl.errors?.['min']">Amount must be at least greater or equal to {{currencyType}} 5</small>
     <div *ngIf="sendMoneyClicked" class="input-group mb-3">
-      <input placeholder="Please type your pin" class="form-control" [formControl]="sendMoneyPinControl" type="password">
+      <input placeholder="Please type your pin" maxlength="6" class="form-control" [formControl]="sendMoneyPinControl" type="password">
     </div>
     <small class="text-danger" *ngIf="sendMoneyPinControl.touched && !sendMoneyPinControl.valid">The pin should be of 6 characters</small>
       <div>

@@ -4,6 +4,7 @@
 
 export const environment = {
   production: false,
+  baseApiUrl: "https://localhost:5001",
   exchangeApiUrl: "https://api.exchangerate.host/latest" //base=GBP&symbols=USD
 };
 

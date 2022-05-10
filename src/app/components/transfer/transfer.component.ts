@@ -1,13 +1,16 @@
 import {Component, OnInit} from '@angular/core';
-import {getCurrentMainModel, getMainModelByUserName, updateMainModel} from "../../helpers/helpers";
+import {getCurrentMainModel, isSuccessFull, updateMainModel} from "../../helpers/helpers";
 import {MainModel} from "../../model/mainModel";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {Transaction} from "../../model/transaction";
+import {AuthService} from "../../servies/api/AuthService";
+import {PayService} from "../../servies/api/PayService";
+import {BaseResponse} from "../../model/response/baseResponse";
 
 @Component({
   selector: 'app-transfer',
   templateUrl: './transfer.component.html',
-  styleUrls: ['./transfer.component.css']
+  styleUrls: ['./transfer.component.css'],
+  providers: [AuthService, PayService]
 })
 export class TransferComponent implements OnInit {
 
@@ -20,13 +23,17 @@ export class TransferComponent implements OnInit {
   public clicked = false;
 
   public sendMoneyAmountControl;
-  public beneficiaryUsernameControl;
+  public accountNumberControl;
+  public fullNameControl;
   public sendMoneyPinControl;
   public sendMoneyForm;
   public sendMoneyClicked = false;
 
 
-  constructor() {
+  constructor(
+    private authService: AuthService,
+    private payService: PayService,
+  ) {
     const currency = localStorage.getItem('currency');
     if (currency) {
       switch (currency) {
@@ -64,7 +71,12 @@ export class TransferComponent implements OnInit {
         Validators.min(5)
       ]);
 
-    this.beneficiaryUsernameControl = new FormControl('',
+    this.accountNumberControl = new FormControl('',
+      [
+        Validators.required,
+      ]);
+
+    this.fullNameControl = new FormControl('',
       [
         Validators.required,
       ]);
@@ -77,24 +89,22 @@ export class TransferComponent implements OnInit {
 
     this.sendMoneyForm = new FormGroup({
       amount: this.sendMoneyAmountControl,
-      username: this.beneficiaryUsernameControl
+      accountNumber: this.accountNumberControl,
+      fullName: this.fullNameControl,
     });
   }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
-  transfer() {
+  async transfer() {
     if (this.clicked) {
-      const mainModel: MainModel = getCurrentMainModel();
-      if (mainModel.userDetails?.pin) {
-        if (mainModel.userDetails.pin === this.pinControl.value) {
-          this.transferAmount();
-        } else {
-          this.pinControl.setValue(null);
-          alert("Pin doesn't match")
-        }
-      }
+      const baseResponse = await this.payService.manageFund({
+        amount: this.amountControl.value,
+        fromAccountType: this.currentToSaving ? 'CURRENT' : 'SAVING',
+        toAccountType: this.currentToSaving ? 'SAVING' : 'CURRENT',
+        pin: this.pinControl.value
+      });
+      if (isSuccessFull(baseResponse)) alert('fund transferred');
     }
     this.clicked = true;
   }
@@ -157,52 +167,38 @@ export class TransferComponent implements OnInit {
     this.payToSomeone = false;
   }
 
-  sendMoney() {
+  async sendMoney() {
     if (this.sendMoneyClicked) {
-      const mainModel: MainModel = getCurrentMainModel();
-      if (mainModel.userDetails?.pin) {
-        if (mainModel.userDetails.pin === this.sendMoneyPinControl.value) {
-          const beneficiaryUsername = this.beneficiaryUsernameControl.value;
-          if (beneficiaryUsername !== mainModel.userDetails.username) {
-            if (localStorage.getItem(beneficiaryUsername)) {
-              const amountTransferred = this.sendMoneyAmountControl.value;
-              if (mainModel.balance && mainModel.balance['CURRENT'] > amountTransferred) {
-                const beneficiaryMainModel = getMainModelByUserName(beneficiaryUsername);
-                if (beneficiaryMainModel.balance && mainModel.balance) {
-                  mainModel.balance['CURRENT'] -= amountTransferred;
-                  beneficiaryMainModel.balance['CURRENT'] += amountTransferred;
-                  updateMainModel(mainModel);
-                  updateMainModel(beneficiaryMainModel);
-                  const transaction: Transaction = {
-                    amount: amountTransferred,
-                    to: beneficiaryUsername,
-                    from: mainModel.userDetails.username,
-                    date: Date.now()
-                  }
-                  const transactionString = localStorage.getItem('transactions') ? localStorage.getItem('transactions') : '[]';
-                  if (transactionString != null) {
-                    const transactions: Array<Transaction> = JSON.parse(transactionString);
-                    transactions.push(transaction);
-                    localStorage.setItem('transactions', JSON.stringify(transactions));
-                  }
-                }
-                alert('transferred');
-              } else {
-                alert('Insufficient balance, Either add money or transfer from saving to current')
-              }
-            } else {
-              alert('no user found');
-            }
-          } else {
-            alert('cannot transfer to yourself');
-          }
-
-        } else {
-          this.sendMoneyPinControl.setValue(null);
-          alert("Pin doesn't match")
+      try {
+        const authenticationResponse: BaseResponse<any> = await this.authService.verifyPIN({
+          pin: this.sendMoneyPinControl.value
+        });
+        if (authenticationResponse.messageType == 'Success') {
+          const baseResponse: BaseResponse<any> = await this.payService.pay({
+            to: {
+              fullName: this.fullNameControl.value,
+              accountNumber: this.accountNumberControl.value
+            },
+            amount: this.sendMoneyAmountControl.value,
+            description: '',
+            pin: this.sendMoneyPinControl.value
+          });
+          if (isSuccessFull(baseResponse)) alert('Successfully transfer')
         }
+      } catch (exception) {
+        console.error(exception);
+        alert('Transfer unsuccessful');
       }
     }
-    this.sendMoneyClicked = true;
+
+    const response = await this.authService.verifyAccountDetails({
+      accountNumber: this.accountNumberControl.value,
+      fullName: this.fullNameControl.value,
+      pin: this.sendMoneyPinControl.value
+    });
+
+    if (isSuccessFull(response)) {
+      this.sendMoneyClicked = true;
+    }
   }
 }

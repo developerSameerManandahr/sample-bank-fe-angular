@@ -1,4 +1,3 @@
-import {MainModel} from "../model/mainModel";
 import {AuthenticationResponse} from "../model/response/authenticationResponse";
 import {HttpHeaders} from "@angular/common/http";
 import {BaseResponse} from "../model/response/baseResponse";
@@ -7,38 +6,9 @@ export function getUser() {
   return localStorage.getItem('currentUser');
 }
 
-export function getCurrentMainModel(): MainModel {
-  let mainModel: MainModel;
-  const currentUser = getUser();
-  if (currentUser) {
-    const mainModelString = localStorage.getItem(currentUser);
-    if (mainModelString) {
-      mainModel = JSON.parse(mainModelString)
-      return mainModel;
-    }
-  }
-  return {};
-}
-
 export function getStringItem(key: string): string {
   let item = localStorage.getItem(key);
   return item != null ? item : "";
-}
-
-export function getMainModelByUserName(name: string): MainModel {
-  let mainModel: MainModel;
-  const mainModelString = localStorage.getItem(name);
-  if (mainModelString) {
-    mainModel = JSON.parse(mainModelString)
-    return mainModel;
-  }
-  return {};
-}
-
-export function updateMainModel(mainModel: MainModel) {
-  if (mainModel.userDetails) {
-    localStorage.setItem(mainModel.userDetails.username, JSON.stringify(mainModel));
-  }
 }
 
 export function setAuthValues(authResponse: AuthenticationResponse) {

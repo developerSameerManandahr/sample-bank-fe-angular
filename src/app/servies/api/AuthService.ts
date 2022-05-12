@@ -61,4 +61,11 @@ export class AuthService {
     });
     return firstValueFrom(objectObservable);
   }
+
+  public verifyToken() {
+    const objectObservable = this.httpClient.get<BaseResponse<any>>(environment.baseApiUrl + "/auth/verify/token", {
+      headers: getHeaders()
+    });
+    return firstValueFrom(objectObservable);
+  }
 }

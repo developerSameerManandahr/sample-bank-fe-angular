@@ -1,10 +1,10 @@
 import {Component, OnInit} from '@angular/core';
-import {getCurrentMainModel, isSuccessFull, updateMainModel} from "../../helpers/helpers";
-import {MainModel} from "../../model/mainModel";
+import {isSuccessFull} from "../../helpers/helpers";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {AuthService} from "../../servies/api/AuthService";
 import {PayService} from "../../servies/api/PayService";
 import {BaseResponse} from "../../model/response/baseResponse";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-transfer',
@@ -33,6 +33,7 @@ export class TransferComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private payService: PayService,
+    private router: Router
   ) {
     const currency = localStorage.getItem('currency');
     if (currency) {
@@ -94,45 +95,25 @@ export class TransferComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {}
-
-  async transfer() {
-    if (this.clicked) {
-      const baseResponse = await this.payService.manageFund({
-        amount: this.amountControl.value,
-        fromAccountType: this.currentToSaving ? 'CURRENT' : 'SAVING',
-        toAccountType: this.currentToSaving ? 'SAVING' : 'CURRENT',
-        pin: this.pinControl.value
-      });
-      if (isSuccessFull(baseResponse)) alert('fund transferred');
-    }
-    this.clicked = true;
+  ngOnInit(): void {
   }
 
-  private transferAmount() {
-    const mainModel: MainModel = getCurrentMainModel();
-    let balance = mainModel.balance;
-    if (balance) {
-      if (this.currentToSaving) {
-        if (balance['CURRENT'] > this.amountControl.value) {
-          balance['CURRENT'] -= this.amountControl.value;
-          balance['SAVING'] += this.amountControl.value;
-          updateMainModel(mainModel);
-          alert('Amount transferred');
-        } else {
-          alert('Balance in current account is insufficient')
-        }
-      } else {
-        if (balance['SAVING'] > this.amountControl.value) {
-          balance['CURRENT'] += this.amountControl.value;
-          balance['SAVING'] -= this.amountControl.value;
-          updateMainModel(mainModel);
-          alert('Amount transferred');
-        } else {
-          alert('Balance in saving account is insufficient')
-        }
+  async transfer() {
+    try {
+      if (this.clicked) {
+        const baseResponse = await this.payService.manageFund({
+          amount: this.amountControl.value,
+          fromAccountType: this.currentToSaving ? 'CURRENT' : 'SAVING',
+          toAccountType: this.currentToSaving ? 'SAVING' : 'CURRENT',
+          pin: this.pinControl.value
+        });
+        if (isSuccessFull(baseResponse)) alert('fund transferred');
       }
+      this.clicked = true;
+    } catch (ex: any) {
+      await this.handleException(ex);
     }
+
   }
 
   validate(): boolean {
@@ -185,9 +166,8 @@ export class TransferComponent implements OnInit {
           });
           if (isSuccessFull(baseResponse)) alert('Successfully transfer')
         }
-      } catch (exception) {
-        console.error(exception);
-        alert('Transfer unsuccessful');
+      } catch (ex: any) {
+        await this.handleException(ex);
       }
     }
 
@@ -199,6 +179,19 @@ export class TransferComponent implements OnInit {
 
     if (isSuccessFull(response)) {
       this.sendMoneyClicked = true;
+    }
+  }
+
+  private async handleException(ex: any) {
+    {
+      let message = ex.error.message;
+      if (ex.error && message) {
+        alert(message);
+        if (message == 'Unauthorized') {
+          localStorage.removeItem('currentUser');
+          await this.router.navigate(['/login']);
+        }
+      }
     }
   }
 }

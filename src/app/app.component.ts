@@ -1,6 +1,5 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
-import {MainModel} from "./model/mainModel";
 
 @Component({
   selector: 'app-root',
@@ -36,24 +35,6 @@ export class AppComponent implements OnInit {
     if (localStorage.getItem('admin')) {
       console.warn('Already initialized');
     } else {
-
-      const model: MainModel = {
-        userDetails: {
-          pin: '123456',
-          password: 'admin1234',
-          firstName: 'Admin',
-          lastName: 'Admin',
-          middleName: '',
-          username: 'admin',
-          accountNumber: "1234567890"
-        },
-        balance: {
-          CURRENT: 100000,
-          SAVING: 100000
-        },
-        currency: 'GBP',
-      };
-      localStorage.setItem('admin', JSON.stringify(model));
 
       localStorage.setItem('currency', 'GBP');
     }

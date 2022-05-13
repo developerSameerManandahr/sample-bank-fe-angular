@@ -19,6 +19,9 @@ import {TransactionComponent} from './components/transaction/transaction.compone
 import {TransferComponent} from './components/transfer/transfer.component';
 import {NgbDropdownModule} from "@ng-bootstrap/ng-bootstrap";
 import {HttpClientModule} from "@angular/common/http";
+import { ProfileComponent } from './components/profile/profile.component';
+import { UpdatePinComponent } from './components/update-pin/update-pin.component';
+import { UpdatePasswordComponent } from './components/update-password/update-password.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +38,10 @@ import {HttpClientModule} from "@angular/common/http";
     MoveMoneyComponent,
     SendMoneyComponent,
     TransactionComponent,
-    TransferComponent
+    TransferComponent,
+    ProfileComponent,
+    UpdatePinComponent,
+    UpdatePasswordComponent,
   ],
   imports: [
     BrowserModule,

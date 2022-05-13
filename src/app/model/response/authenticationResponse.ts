@@ -5,4 +5,6 @@ export interface AuthenticationResponse {
   userName : string
   accountNumber : string
   token : string
+  phoneNumber : string
+  address : string
 }

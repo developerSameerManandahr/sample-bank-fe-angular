@@ -19,7 +19,7 @@ export class ExchangeService {
     outputCurrencyType: string,
     amount: number): Promise<number> {
 
-    const objectObservable = this.httpClient.get<Exchange>(environment.baseApiUrl + '/exchange/convert');
+    const objectObservable = this.httpClient.get<Exchange>(environment.baseApiUrl + '/exchange/rates');
 
     return this.convertToPromise(objectObservable, outputCurrencyType, amount)
   }

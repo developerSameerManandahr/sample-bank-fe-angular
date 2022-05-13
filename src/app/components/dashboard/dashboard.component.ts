@@ -14,6 +14,7 @@ export class DashboardComponent implements OnInit {
   public isTransactionClicked = false;
   public isHomeClicked = true;
   public isTransferClicked = false;
+  public isProfileClicked = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -38,17 +39,26 @@ export class DashboardComponent implements OnInit {
             this.isHomeClicked = false;
             this.isTransactionClicked = true;
             this.isTransferClicked = false;
+            this.isProfileClicked = false;
             break;
           case '2':
             this.isHomeClicked = false;
             this.isTransactionClicked = false;
             this.isTransferClicked = true;
+            this.isProfileClicked = false;
+            break;
+          case '3':
+            this.isHomeClicked = false;
+            this.isTransactionClicked = false;
+            this.isTransferClicked = false;
+            this.isProfileClicked = true;
             break;
           default:
           case '0':
             this.isHomeClicked = true;
             this.isTransactionClicked = false;
             this.isTransferClicked = false;
+            this.isProfileClicked = false;
             break;
         }
       });

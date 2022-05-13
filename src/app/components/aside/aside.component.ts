@@ -73,6 +73,11 @@ export class AsideComponent implements OnInit {
     return this.router.navigate(['/login']);
   }
 
+  viewProfile(): Promise<boolean> {
+    localStorage.removeItem('currentUser');
+    return this.router.navigate(['/login']);
+  }
+
   /**
    * Used while selecting the currency in ui
    */

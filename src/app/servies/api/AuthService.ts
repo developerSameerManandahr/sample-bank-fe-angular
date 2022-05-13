@@ -10,6 +10,7 @@ import {AuthenticationResponse} from "../../model/response/authenticationRespons
 import {VerifyAccountDetails} from "../../model/request/verifyAccountDetails";
 import {BaseResponse} from "../../model/response/baseResponse";
 import {getHeaders} from "../../helpers/helpers";
+import {UpdatePasswordRequest, UpdatePinRequest} from "../../model/request/UpdateUserDetails";
 
 @Injectable({
   providedIn: 'root'
@@ -64,6 +65,20 @@ export class AuthService {
 
   public verifyToken() {
     const objectObservable = this.httpClient.get<BaseResponse<any>>(environment.baseApiUrl + "/auth/verify/token", {
+      headers: getHeaders()
+    });
+    return firstValueFrom(objectObservable);
+  }
+
+  public updatePin(updatePinRequest: UpdatePinRequest) {
+    const objectObservable = this.httpClient.put<BaseResponse<any>>(environment.baseApiUrl + "/auth/change/Pin", updatePinRequest, {
+      headers: getHeaders()
+    });
+    return firstValueFrom(objectObservable);
+  }
+
+  public updatePassword(updatePinRequest: UpdatePasswordRequest) {
+    const objectObservable = this.httpClient.put<BaseResponse<any>>(environment.baseApiUrl + "/auth/change/password", updatePinRequest, {
       headers: getHeaders()
     });
     return firstValueFrom(objectObservable);

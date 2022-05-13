@@ -1,4 +1,5 @@
 <aside>
+<div class = "side">
   <div class="d-inline-block" ngbDropdown #myDrop="ngbDropdown">
     <button class="btn btn-outline-primary me-2" id="dropdownManual" ngbDropdownAnchor (focus)="myDrop.open()">Currency</button>
     <div ngbDropdownMenu aria-labelledby="dropdownManual">
@@ -8,11 +9,12 @@
     </div>
   </div>
 
-  <p>User: {{user}}</p>
+  <p>Username: {{user}}</p>
   <p>Account Number: <br> {{accountNumber}}</p>
   <p>Current Balance : <br> {{currencyType}} {{currentBalance}}</p>
   <p>Saving Balance : <br> {{currencyType}} {{savingBalance}}</p>
 
 
   <button class="btn btn-danger" (click)="logout()">logout</button>
+</div>
 </aside>

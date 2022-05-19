@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import {PrivacyPolicyComponent} from "./components/privacy-policy/privacy-policy.component";
 import {MainComponent} from "./components/main/main.component";
 import {DashboardComponent} from "./components/dashboard/dashboard.component";
 import {LoginComponent} from "./components/login/login.component";
@@ -16,7 +15,6 @@ const routes: Routes = [
   { path: 'signup', component: SignupComponent },
   { path: 'transfer', component: TransferComponent },
   { path: 'transaction', component: TransactionComponent },
-  { path: 'privacy-policy', component: PrivacyPolicyComponent }
 ];
 
 @NgModule({

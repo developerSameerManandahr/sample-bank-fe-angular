@@ -1,7 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
 import {AuthService} from "../../servies/api/AuthService";
-import {AuthenticationResponse} from "../../model/response/authenticationResponse";
 import {setAuthValues} from "../../helpers/helpers";
 
 @Component({
@@ -13,7 +12,6 @@ import {setAuthValues} from "../../helpers/helpers";
 export class LoginComponent implements OnInit {
 
   public loginByPin = false;
-  private loggedId = false;
   public username = '';
   public password = '';
   public pin = '';
@@ -23,8 +21,7 @@ export class LoginComponent implements OnInit {
               private authService: AuthService) {
   }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   loginByPIN() {
     this.loginByPin = true;
@@ -58,7 +55,6 @@ export class LoginComponent implements OnInit {
         alert('Invalid credentials')
       });
   }
-
 
 
   private authenticateWithPin() {
